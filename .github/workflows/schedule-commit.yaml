@@ -63,8 +63,8 @@ jobs:
         
       - name: Commit files
         run: |
-          git config --local user.email "yw6@andrew.cmu.edu"
-          git config --local user.name "Yuchengyw6"
+          git config --local user.email "ACHD.AirQuality@gmail.com"
+          git config --local user.name "ACHDAirQuality"
           git add --all
           git commit -am "add data"
           git push 
