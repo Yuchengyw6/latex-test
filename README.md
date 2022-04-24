@@ -1,6 +1,6 @@
 # Repository for the Allegheny County Health Department Air Quality and Dispersion Report's Automated Process
 
-This repository is adapted from the GitHub action for [compiling a LaTeX document](https://github.com/xu-cheng/latex-action). It was developed by a team from The Master of Statistical Practice program at Carnegie Mellon University as a part of a capstone project for the Allegheny County Health Department. The repository belongs to ACHD, so any questions about this repository should be sent to X. However, future developers for this process can contact the original team: [Clare Cruz](cbrightly1@gmail.com), [Naijia Liu](liunj16@gmail.com), Yucheng Wang, and Keving Yang. 
+This repository is adapted from the GitHub action for [compiling a LaTeX document](https://github.com/xu-cheng/latex-action). It was developed by a team from The Master of Statistical Practice program at Carnegie Mellon University as a part of a capstone project for the Allegheny County Health Department. The repository belongs to ACHD, so any questions about this repository should be sent to X. However, future developers for this process can contact the original team: Clare Cruz (cbrightly1@gmail.com),  Naijia Liu (liunj16@gmail.com), Yucheng Wang, and Keving Yang. 
 
 Thanks a lot to [Cheng Xu](https://github.com/xu-cheng) for his repo https://github.com/xu-cheng/latex-action and thanks a lot to the instruction written by [David Haberthür](https://github.com/habi).
 
