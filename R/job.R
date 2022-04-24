@@ -198,7 +198,7 @@ if(is_empty(p4_1)==FALSE){
   todaymorningwind = paste(p4_1[7,1+which.max(as.numeric(p4_1[6,2:5]))],p4_1[6,1+which.max(as.numeric(p4_1[6,2:5]))],sep=" - ")
   todayafternoonwind = paste(p4_1[7,5+which.max(as.numeric(p4_1[6,6:11]))],p4_1[6,5+which.max(as.numeric(p4_1[6,6:11]))],sep=" - ")
   todayeveningwind = paste(p4_1[7,11+which.max(as.numeric(p4_1[6,12:17]))],p4_1[6,11+which.max(as.numeric(p4_1[6,12:17]))],sep=" - ")
-  todayovernightwind = paste(p4_1[7,17+which.max(as.numeric(p4_1[6,18:23]))],p4_1[7,16+which.max(as.numeric(p4_1[6,18:23]))],sep=" - ")
+  todayovernightwind = paste(p4_1[7,17+which.max(as.numeric(p4_1[6,18:23]))],p4_1[6,16+which.max(as.numeric(p4_1[6,18:23]))],sep=" - ")
 } else{
   todaymorningwind<-"--"
   todayafternoonwind<-"--"
@@ -222,7 +222,7 @@ if(is_empty(p4_2)==FALSE){
   tomorrowmorningwind = paste(p4_2[7,1+which.max(as.numeric(p4_2[6,2:5]))],p4_2[6,1+which.max(as.numeric(p4_2[6,2:5]))],sep=" - ")
   }
   else{
-    tomorrowmorningwind = paste(p4_1[7,1+which.max(as.numeric(p4_1[23,24:25]))],p4_1[6,1+which.max(as.numeric(p4_1[23,24:25]))],sep=" - ")
+    tomorrowmorningwind = paste(p4_1[7,23+which.max(as.numeric(p4_1[6,24:25]))],p4_1[6,23+which.max(as.numeric(p4_1[6,24:25]))],sep=" - ")
   }
   
   tomorrowafternoonwind = paste(p4_2[7,5+which.max(as.numeric(p4_2[6,6:11]))],p4_2[6,5+which.max(as.numeric(p4_2[6,6:11]))],sep=" - ")
