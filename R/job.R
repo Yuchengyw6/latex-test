@@ -218,7 +218,7 @@ if(is_empty(p4_2)==FALSE){
   p4_2 = p4_2[-c(1,402)]
   dim(p4_2) = c(25,32)
   p4_2 = t(p4_2)
-  if(max(as.numeric(p4_2[6,2:5])>=max(as.numeric(p4_1[6,18:23])))){
+  if(max(as.numeric(p4_2[6,2:5])>=max(as.numeric(p4_1[6,24:25])))){
   tomorrowmorningwind = paste(p4_2[7,1+which.max(as.numeric(p4_2[6,2:5]))],p4_2[6,1+which.max(as.numeric(p4_2[6,2:5]))],sep=" - ")
   }
   else{
