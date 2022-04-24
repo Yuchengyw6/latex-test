@@ -416,7 +416,7 @@ if (is_empty(table5)==FALSE){
   # Calculation for Surface Inversion Strength and Inversion Depth
   tempdiff<-diff(five[,3]) # Create a differenced list of the temperature column, each entry subtracted from the next
   peaktemp<-five[which(tempdiff<0),3][1]
-  mintempheight<-as.numeric(five[which(five[,3]==peaktemp[1]),2])
+  mintempheight<-as.numeric(five[which(five[,3]==peaktemp[1]),2])[1]
   surfaceinversion<-as.numeric(peaktemp-five[1,3]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
   inversiondepth<-as.numeric(mintempheight-five[1,2])
   
@@ -470,7 +470,7 @@ if (is_empty(table5)==FALSE){
     colnames(five)<-c("Type","Pressure (mb)","Height (m)","Temperature (C)","Dew Point (C)","Wind Direction (Degrees)","Wind Speed (Knots)") # Give each column their names and units
     tempdifffive<-diff(unlist(five[,4])) # Create a differenced list of the temperature column, each entry subtracted from the next
     peaktempalt<-five[which(tempdifffive<0),4][1] 
-    mintempheightalt<-as.numeric(five[which(five[,4]==as.numeric(peaktempalt[1])),3])
+    mintempheightalt<-as.numeric(five[which(five[,4]==as.numeric(peaktempalt[1])),3])[1]
     surfaceinversion<-as.numeric(peaktempalt[[1]]-five[1,4][[1]]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
     inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(five[1,3][[1]])) # Take the height of the peak temperature and subtract the surface height (359 m) to get Inversion Depth
     
@@ -566,7 +566,7 @@ if(is_empty(table6)==FALSE){
   colnames(six)<-c("Type","Pressure (mb)","Height (m)","Temperature (C)","Dew Point (C)","Wind Direction (Degrees)","Wind Speed (Knots)") # Give each column their names and units
   tempdiffsix<-diff(unlist(six[,4])) # Create a differenced list of the temperature column, each entry subtracted from the next
   peaktempalt<-six[which(tempdiffsix<0),4][1] 
-  mintempheightalt<-as.numeric(six[which(six[,4]==as.numeric(peaktempalt[1])),3])
+  mintempheightalt<-as.numeric(six[which(six[,4]==as.numeric(peaktempalt[1])),3])[1]
   surfaceinversion2<-as.numeric(peaktempalt[[1]]-six[1,4][[1]]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
   inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(six[1,3][[1]])) # Take the height of the peak temperature and subtract the surface height (359 m) to get Inversion Depth
   
