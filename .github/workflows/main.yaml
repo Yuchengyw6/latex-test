@@ -29,8 +29,8 @@ jobs:
 
         # configure git
         # Here is the github name and email
-        git config --global user.name "Yuchengyw6"
-        git config --global user.email "yw6@andrew.cmu.edu"
+        git config --global user.name "ACHDAirQuality"
+        git config --global user.email "ACHD.AirQuality@gmail.com"
 
         # setup ssh
         mkdir ~/.ssh
@@ -47,7 +47,7 @@ jobs:
         git add main.pdf
         git commit -m "[github actions] deploy"
         # here is the github repository link
-        git remote add origin git@github.com:Yuchengyw6/latex-test.git
+        git remote add origin git@github.com:ACHDAirQuality/ACHD_Report_Generate.git
         git push --force --set-upstream origin gh-pages
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
