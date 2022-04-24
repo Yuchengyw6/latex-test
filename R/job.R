@@ -230,43 +230,54 @@ if(is_empty(p4_2)==FALSE){
   tomorrowmorningwind<-"--"
   tomorrowafternoonwind<-"--"
 }
+# --------------------------------------------------------------------------------------------------------------------------------------
 # Website 4 - Air Dispersion Index
-# For this website, the numbers in the first three columns of the first table after the "ADI Early" and "ADI Late" rows will be scraped
+# This website is the Fire Weather Planning Forecast from the National Weather Service
+# The numbers in the first three columns of the first table after the "ADI Early" and "ADI Late" rows will be scraped
 # These consist of a number and a description
+# --------------------------------------------------------------------------------------------------------------------------------------
 
+# The morning report is usually updated between 2 - 4 AM, and the afternoon report is updated between 12 - 1 PM.
+# We only want the data from the morning report
 if (as.numeric(h)>=4 & as.numeric(h)<12){
   link4<-"https://forecast.weather.gov/product.php?site=NWS&product=FWF&issuedby=PBZ"
 } else {
   link4<-"https://forecast.weather.gov/product.php?site=NWS&issuedby=PBZ&product=FWF&format=CI&version=2&glossary=0"
 }
 
-
+# Attempt to read in the website link, if the website is down, this will return a blank vector
 page4<-tryCatch(read_html(link4),error=function(y){return(c())}) # Read in correct website link, return a blank vector if the website is down
+# If the website is up, this attempts to scrape necessary data, if it's empty, this will return a blank vector
 if (is_empty(page4)==FALSE){
-  table4<-page4 %>% # Select the node containing the data, in  this case, all of the tables on the site will be scraped at once
+  table4<-page4 %>%
     html_nodes(".glossaryProduct") %>%
     html_text()
 } else {
   table4<-c()
 }
 
+# If data was scraped, attempt to extract the ADI Early and ADI Late rows from the first table on the site
 if(is_empty(table4)==FALSE){
   adiearly<-str_extract(table4,'ADI\\searly.{1,}') # Extract ADI Early row from the first table
   adilate<-str_extract(table4,'ADI\\slate.{1,}') # Extract ADI Late row from the first table
+ 
   # ADI Early
-  adiearlysplit<-str_extract_all(adiearly,'\\d{1,}\\s.{1,9}') # Split the row into each number-description pair
-  adiearlytoday<-trimws(adiearlysplit[[1]][1],whitespace=" ") # First pair is the "today" column, take the pair and remove any spaces before and after the text
-  aetodvalue<-str_extract(adiearlytoday,'\\d{1,}') # Extracts just the number from the today pair
-  aetoddesc<-str_extract(adiearlytoday,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}')) # Extracts the description after the today pair
-  adiearlytonight<-trimws(adiearlysplit[[1]][2],whitespace=" ") # Second pair is the "tonight" column, take the pair and remove any spaces before and after the text
-  aetonvalue<-str_extract(adiearlytonight,'\\d{1,}') # Extracts just the number from the tonight pair
-  aetondesc<-str_extract(adiearlytonight,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}')) # Extracts the description after the tonight pair
-  adiearlytomorrow<-trimws(adiearlysplit[[1]][3],whitespace=" ") # Third pair is the "tomorrow" column, take the pair and remove any spaces before and after the text
-  aetomvalue<-str_extract(adiearlytomorrow,'\\d{1,}') # Extracts just the number from the tonight pair
-  aetomdesc<-str_extract(adiearlytomorrow,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}')) # Extracts the description after the tonight pair
+  # Split the ADI Early row into their respective columns, early today, early tonight, early tomorrow. These should contain a number-phrase pair
+  # The pairs should then be split into their own variables
+  adiearlysplit<-str_extract_all(adiearly,'\\d{1,}\\s.{1,9}') 
+  adiearlytoday<-trimws(adiearlysplit[[1]][1],whitespace=" ") 
+  aetodvalue<-str_extract(adiearlytoday,'\\d{1,}')
+  aetoddesc<-str_extract(adiearlytoday,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}'))
+  adiearlytonight<-trimws(adiearlysplit[[1]][2],whitespace=" ")
+  aetonvalue<-str_extract(adiearlytonight,'\\d{1,}')
+  aetondesc<-str_extract(adiearlytonight,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}'))
+  adiearlytomorrow<-trimws(adiearlysplit[[1]][3],whitespace=" ")
+  aetomvalue<-str_extract(adiearlytomorrow,'\\d{1,}')
+  aetomdesc<-str_extract(adiearlytomorrow,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}'))
   
   # ADI Late
-  adilatesplit<-str_extract_all(adilate,'\\d{1,}\\s.{1,9}') # Code here is identical to the ADI Early code, process is the same as above
+  # Same as the above code chunk for ADI Early
+  adilatesplit<-str_extract_all(adilate,'\\d{1,}\\s.{1,9}')
   adilatetoday<-trimws(adilatesplit[[1]][1],whitespace=" ")
   altodvalue<-str_extract(adilatetoday,'\\d{1,}')
   altoddesc<-str_extract(adilatetoday,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}'))
@@ -277,6 +288,8 @@ if(is_empty(table4)==FALSE){
   altomvalue<-str_extract(adilatetomorrow,'\\d{1,}')
   altomdesc<-str_extract(adilatetomorrow,regex('[:alpha:]{1,}[:space:]{1}[:alpha:]{1,}|[:alpha:]{1,}'))
   
+  # If the ADI is zero, the number won't show up on the website
+  # This attaches the zero and "Very Poor" values to the correct variables
   if(is.na(adiearlytomorrow)==TRUE){
     aetomvalue<-0
     aetomdesc<-"Very Poor"
@@ -360,17 +373,17 @@ if(is_empty(table4)==FALSE){
   tomorrowmorning<-"--"
   tomorrowafternoon<-"--"
 }
+# --------------------------------------------------------------------------------------------------------------------------------------
 # Website 5
 # Data is scraped here to calculate the Inversion Strength and Inversion Depths for the day
-# Website is updated at 7AM every day
-
-# if the hour is before 8 am
+# Website is updated at 8 AM every day, (7 AM if not during Daylight Savings Time)
+# --------------------------------------------------------------------------------------------------------------------------------------
+# If the hour is before 8 am, use yesterday's data as a placeholder
 if (as.numeric(h)<8){
-  yesterday<-strptime(with_tz(Sys.Date()-1,tzone="US/Eastern"),"%Y-%m-%d") # Using yesterday's date if website hasn't updated yet
+  yesterday<-strptime(with_tz(Sys.Date()-1,tzone="US/Eastern"),"%Y-%m-%d")
   y5<-as.character(format(yesterday,"%Y"))
   m5<-as.character(format(yesterday,"%m"))
   d5<-as.character(format(yesterday,"%d"))
-  # Place the year, month, and day values into the link to get the data for the day
   link5<-paste("http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=",y5,
                "&MONTH=",m5,"&FROM=",d5,"12&TO=",d5,"12&STNM=72520",sep="") 
 } else {
