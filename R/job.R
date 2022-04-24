@@ -36,13 +36,17 @@ if (is_empty(webpage1_1)==FALSE){
   pitt<-c()
 }
 if (is_empty(pitt)==FALSE){
+  todaypittpollutant=strsplit(str_extract(pitt,"(?<=Today).*?(?=<br />)"),"-")[[1]][3]
+  todaypittpollutant=gsub(" ","",todaypittpollutant)
   todaypitt=str_extract(pitt,"(?<=Today).*?(?=AQI)")
   todaypitt=strsplit(todaypitt,"-")
   AQIDateToday = substr(todaypitt[[1]][1],3,12)
   AQIWeekToday = weekdays(as.Date(AQIDateToday,"%m/%d/%Y"))
   todaypitt=strsplit(todaypitt[[1]][2]," ")
   todaypitt=todaypitt[[1]][2]
-  tomorrowpitt=str_extract(pitt,"(?<=Tomorrow).*?(?=AQI)")
+  tompittpollutant=strsplit(str_extract(pitt,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
+  tomorrowpittpollutant=gsub(" ","",tomorrowpittpollutant)
+  tomorrowrrowpitt=str_extract(pitt,"(?<=Tomorrow).*?(?=AQI)")
   tomorrowpitt=strsplit(tomorrowpitt,"-")
   AQIDateTom = substr(tomorrowpitt[[1]][1],3,12)
   AQIWeekTom = weekdays(as.Date(AQIDateTom,"%m/%d/%Y"))
@@ -61,10 +65,14 @@ if (is_empty(webpage1_2)==FALSE){
   LC<-c()
 }
 if(is_empty(LC)==FALSE){
+  todayLCpollutant=strsplit(str_extract(LC,"(?<=Today).*?(?=<br />)"),"-")[[1]][3]
+  todayLCpollutant=gsub(" ","",todayLCpollutant)
   todayLC=str_extract(LC,"(?<=Today).*?(?=AQI)")
   todayLC=strsplit(todayLC,"-")
   todayLC=strsplit(todayLC[[1]][2]," ")
   todayLC=todayLC[[1]][2]
+  tomorrowLCpollutant=strsplit(str_extract(LC,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
+  tomorrowLCpollutant=gsub(" ","",tomorrowLCpollutant)
   tomorrowLC=str_extract(LC,"(?<=Tomorrow).*?(?=AQI)")
   tomorrowLC=strsplit(tomorrowLC,"-")
   tomorrowLC=strsplit(tomorrowLC[[1]][2]," ")
@@ -442,7 +450,7 @@ if (is_empty(table5)==FALSE){
     mintempheightalt<-as.numeric(five[which(five[,4]==as.numeric(peaktempalt[1])),3])
     surfaceinversion<-as.numeric(peaktempalt[[1]]-five[1,4][[1]]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
     inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(five[1,3][[1]])) # Take the height of the peak temperature and subtract the surface height (359 m) to get Inversion Depth
-      
+    
     breaktemp<-(((inversiondepth/100)+five[which(tempdifffive<0),4][[1]])*9/5)+32 # Take this number and match it to the weather forecast. The time of day when this temperature is reached is the break time.
     
     # Determining if there are any upper inversions
@@ -467,8 +475,8 @@ if (is_empty(table5)==FALSE){
         if(as.numeric(p4_1[2,i])!=23){
           if(abs(as.numeric(p4_1[3,i])-breaktemp)<=2){
             if(as.numeric(p4_1[2,i])<12){
-            time5=as.numeric(p4_1[2,i])
-            time5=paste(time5," am",sep="")}
+              time5=as.numeric(p4_1[2,i])
+              time5=paste(time5," am",sep="")}
             break
           }
           else{break}
@@ -510,9 +518,9 @@ if (as.numeric(h)<8){
 
 page6<-tryCatch(read_html(link6),error = function(y){return(c())}) # Read link, return a blank vector if the website is down
 if (is_empty(page6)==FALSE){
-table6<-page6 %>% # Select nodes with the needed data which is the full table
-  html_nodes("p") %>%
-  html_text()
+  table6<-page6 %>% # Select nodes with the needed data which is the full table
+    html_nodes("p") %>%
+    html_text()
 } else {
   table6<-c()
 }
@@ -635,6 +643,18 @@ AQI_pitt_tom_color <- aqi_color(result$Pittsburgh.Area[2])
 AQI_LC_today_color <- aqi_color(result$Liberty.Clairton.Area[1])
 
 AQI_LC_tom_color <- aqi_color(result$Liberty.Clairton.Area[2])
+
+AQI_pitt_today_pollutant = paste("\\newcommand\\AQIpitttodaypolutant{",todaypittpollutant,"}",sep="")
+output = paste(output,AQI_pitt_today_pollutant,sep="\n")
+
+AQI_pitt_tomorrow_pollutant= paste("\\newcommand\\AQIpitttomorrowpolutant{",tomorrowpittpollutant,"}",sep="")
+output = paste(output,AQI_pitt_tomorrow_pollutant,sep="\n")
+
+AQI_LC_today_pollutant= paste("\\newcommand\\AQILCtodaypolutant{",todayLCpollutant,"}",sep="")
+output = paste(output,AQI_LC_today_pollutant,sep="\n")
+
+AQI_LC_tomorrow_pollutant= paste("\\newcommand\\AQILCtomorrowpolutant{",tomorrowLCpollutant,"}",sep="")
+output = paste(output,AQI_LC_tomorrow_pollutant,sep="\n")
 
 discription = paste("\\newcommand\\Discriptions{",result[[4]][1],"}",sep="")
 output = paste(output,discription,sep="\n")
