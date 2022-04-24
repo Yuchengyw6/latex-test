@@ -44,7 +44,7 @@ if (is_empty(pitt)==FALSE){
   AQIWeekToday = weekdays(as.Date(AQIDateToday,"%m/%d/%Y"))
   todaypitt=strsplit(todaypitt[[1]][2]," ")
   todaypitt=todaypitt[[1]][2]
-  tompittpollutant=strsplit(str_extract(pitt,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
+  tomorrowpittpollutant=strsplit(str_extract(pitt,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
   tomorrowpittpollutant=gsub(" ","",tomorrowpittpollutant)
   tomorrowrrowpitt=str_extract(pitt,"(?<=Tomorrow).*?(?=AQI)")
   tomorrowpitt=strsplit(tomorrowpitt,"-")
