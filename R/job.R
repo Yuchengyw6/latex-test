@@ -46,7 +46,7 @@ if (is_empty(pitt)==FALSE){
   todaypitt=todaypitt[[1]][2]
   tomorrowpittpollutant=strsplit(str_extract(pitt,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
   tomorrowpittpollutant=gsub(" ","",tomorrowpittpollutant)
-  tomorrowrrowpitt=str_extract(pitt,"(?<=Tomorrow).*?(?=AQI)")
+  tomorrowpitt=str_extract(pitt,"(?<=Tomorrow).*?(?=AQI)")
   tomorrowpitt=strsplit(tomorrowpitt,"-")
   AQIDateTom = substr(tomorrowpitt[[1]][1],3,12)
   AQIWeekTom = weekdays(as.Date(AQIDateTom,"%m/%d/%Y"))
