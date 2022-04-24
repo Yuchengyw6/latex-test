@@ -20,13 +20,15 @@ m<-as.character(format(times,"%m")) # Extract and store the month value
 d<-as.character(format(times,"%d")) # Extract and store the day value
 h<-as.character(format(times,"%H")) # Extract and store the hour value
 
+# --------------------------------------------------------------------------------------------------------------------------------------
 # 1, webscraping processes
 # webscraping with rvest package, some regular expressions are used.
 # website 1
 # For website 1, AQI information(today, tomorrow) for Pittsburgh area and Liberty-Clairton area are scarped.
-# The content of the website would be updated at ___ everyday, and does not change until next update.
+# The content of the website would be updated befor 8 am everyday, and does not change until next update.
 # The source of the websites is the api of airnow.
-#
+# --------------------------------------------------------------------------------------------------------------------------------------
+
 webpage1_1 <- tryCatch(read_html("http://feeds.airnowapi.org/rss/forecast/113.xml"),error=function(y){return(c())})
 if (is_empty(webpage1_1)==FALSE){
   pitt = webpage1_1 %>%
@@ -109,14 +111,15 @@ aqi_color<-function(x){
   } else "FF2121" 
 }
 
-
+# --------------------------------------------------------------------------------------------------------------------------------------
 # website 2
 #
 # For this website, we scraped the Discussion part from the report "Southwest Ozone/PM2.5 Forecast", in our report
 # it is the content in "Today's Forecast" section.
 # The content of the website would be updated at ___ everyday, and does not change until next update.
 # The source of the website is the Pennsylvania Department of Environmental Protection.
-# 
+## --------------------------------------------------------------------------------------------------------------------------------------
+
 webpage2 <- tryCatch(read_html("https://www.ahs.dep.pa.gov/AQPartnersWeb/forecast.aspx?vargroup=sw"),error=function(y){return(c())})
 if (is_empty(webpage2)==FALSE){
   todayforecast <- webpage2 %>%
@@ -136,13 +139,15 @@ if(is_empty(todayforecast)==FALSE){
   todayforecast<-"--"
 }
 
+# --------------------------------------------------------------------------------------------------------------------------------------
 # website 3
 # 
 # The wind direction and speed information is obtained from this website.
 # The source is National Weather Service Forecast office.
 # The content in this website updates every hour, and only contains the information in the future.
 # Better be scraped in a fixed time daily(e.g.: 8:30 am)
-# 
+# --------------------------------------------------------------------------------------------------------------------------------------
+
 webpage4 <- tryCatch(read_html("https://forecast.weather.gov/MapClick.php?lat=40.427&lon=-80.0107&lg=english&&FcstType=digital"),error=function(y){return(c())})
 date = as.character(Sys.Date())
 date = strsplit(date,"-")
@@ -373,12 +378,14 @@ if(is_empty(table4)==FALSE){
   tomorrowmorning<-"--"
   tomorrowafternoon<-"--"
 }
+
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Website 5
 # Data is scraped here to calculate the Inversion Strength and Inversion Depths for the day
 # Website is updated at 8 AM every day, (7 AM if not during Daylight Savings Time)
 # --------------------------------------------------------------------------------------------------------------------------------------
 # If the hour is before 8 am, use yesterday's data as a placeholder
+
 if (as.numeric(h)<8){
   yesterday<-strptime(with_tz(Sys.Date()-1,tzone="US/Eastern"),"%Y-%m-%d")
   y5<-as.character(format(yesterday,"%Y"))
@@ -641,8 +648,10 @@ adi <- data.frame(
 
 result = c(aqi,aqi_forecast,adi,temp5,depth5,time5,scale5,inversion5,title)
 
-# --------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------
 # Use to generate the variables in the .tex files
+# --------------------------------------------------------------------------------------------------------------------------------------
+
 output = ""
 
 # From here, we are generating the .tex file, you can add any varibles you like by using the format below.
