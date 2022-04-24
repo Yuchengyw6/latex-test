@@ -38,6 +38,10 @@ if (is_empty(webpage1_1)==FALSE){
 if (is_empty(pitt)==FALSE){
   todaypittpollutant=strsplit(str_extract(pitt,"(?<=Today).*?(?=<br />)"),"-")[[1]][3]
   todaypittpollutant=gsub(" ","",todaypittpollutant)
+  if(todaypittpollutant != "Ozone")
+  {
+    todaypittpollutant="PM 2.5"
+  }
   todaypitt=str_extract(pitt,"(?<=Today).*?(?=AQI)")
   todaypitt=strsplit(todaypitt,"-")
   AQIDateToday = substr(todaypitt[[1]][1],3,12)
@@ -46,6 +50,10 @@ if (is_empty(pitt)==FALSE){
   todaypitt=todaypitt[[1]][2]
   tomorrowpittpollutant=strsplit(str_extract(pitt,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
   tomorrowpittpollutant=gsub(" ","",tomorrowpittpollutant)
+  if(tomorrowpittpollutant != "Ozone")
+  {
+    tomorrowpittpollutant="PM 2.5"
+  }
   tomorrowpitt=str_extract(pitt,"(?<=Tomorrow).*?(?=AQI)")
   tomorrowpitt=strsplit(tomorrowpitt,"-")
   AQIDateTom = substr(tomorrowpitt[[1]][1],3,12)
@@ -67,12 +75,20 @@ if (is_empty(webpage1_2)==FALSE){
 if(is_empty(LC)==FALSE){
   todayLCpollutant=strsplit(str_extract(LC,"(?<=Today).*?(?=<br />)"),"-")[[1]][3]
   todayLCpollutant=gsub(" ","",todayLCpollutant)
+  if(todayLCpollutant != "Ozone")
+  {
+    todayLCpollutant="PM 2.5"
+  }
   todayLC=str_extract(LC,"(?<=Today).*?(?=AQI)")
   todayLC=strsplit(todayLC,"-")
   todayLC=strsplit(todayLC[[1]][2]," ")
   todayLC=todayLC[[1]][2]
   tomorrowLCpollutant=strsplit(str_extract(LC,"(?<=Tomorrow).*?(?=<br />)"),"-")[[1]][3]
   tomorrowLCpollutant=gsub(" ","",tomorrowLCpollutant)
+  if(tomorrowLCpollutant != "Ozone")
+  {
+    tomorrowLCpollutant="PM 2.5"
+  }
   tomorrowLC=str_extract(LC,"(?<=Tomorrow).*?(?=AQI)")
   tomorrowLC=strsplit(tomorrowLC,"-")
   tomorrowLC=strsplit(tomorrowLC[[1]][2]," ")
