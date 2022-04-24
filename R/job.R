@@ -179,8 +179,8 @@ if(is_empty(p2)==FALSE){
 }
 
 
-web4_1 = paste("https://forecast.weather.gov/MapClick.php?w0=t&w1=td&w2=wc&w3=sfcwind&w3u=1&w4=sky&w5=pop&w6=rh&w7=rain&w8=thunder&w9=snow&w10=fzg&w11=sleet&w13u=0&w16u=1&w17u=1&AheadHour=",9-time+15+9,"&Submit=Submit&FcstType=digital&textField1=40.427&textField2=-80.0107&site=all&unit=0&dd=&bw=",sep="")
-web4_2 = paste("https://forecast.weather.gov/MapClick.php?w0=t&w1=td&w2=wc&w3=sfcwind&w3u=1&w4=sky&w5=pop&w6=rh&w7=rain&w8=thunder&w9=snow&w10=fzg&w11=sleet&w13u=0&w16u=1&w17u=1&AheadHour=",9-time+24+15+9,"&Submit=Submit&FcstType=digital&textField1=40.427&textField2=-80.0107&site=all&unit=0&dd=&bw=",sep="")
+web4_1 = paste("https://forecast.weather.gov/MapClick.php?w0=t&w1=td&w2=wc&w3=sfcwind&w3u=1&w4=sky&w5=pop&w6=rh&w7=rain&w8=thunder&w9=snow&w10=fzg&w11=sleet&w13u=0&w16u=1&w17u=1&AheadHour=",9-time,"&Submit=Submit&FcstType=digital&textField1=40.427&textField2=-80.0107&site=all&unit=0&dd=&bw=",sep="")
+web4_2 = paste("https://forecast.weather.gov/MapClick.php?w0=t&w1=td&w2=wc&w3=sfcwind&w3u=1&w4=sky&w5=pop&w6=rh&w7=rain&w8=thunder&w9=snow&w10=fzg&w11=sleet&w13u=0&w16u=1&w17u=1&AheadHour=",9-time+24,"&Submit=Submit&FcstType=digital&textField1=40.427&textField2=-80.0107&site=all&unit=0&dd=&bw=",sep="")
 webpage4_1=tryCatch(read_html(web4_1),error=function(y){return(c())})
 if (is_empty(webpage4_1)==FALSE){
   p4_1 <- webpage4_1 %>%
@@ -194,10 +194,11 @@ if(is_empty(p4_1)==FALSE){
   p4_1 = p4_1[-c(1,402)]
   dim(p4_1) = c(25,32)
   p4_1 = t(p4_1)
-  todaymorningwind = paste(p4_1[7,2],p4_1[6,2],sep=" - ")
-  todayafternoonwind = paste(p4_1[7,8],p4_1[6,8],sep=" - ")
-  todayeveningwind = paste(p4_1[7,14],p4_1[6,14],sep=" - ")
-  todayovernightwind = paste(p4_1[7,17],p4_1[6,17],sep=" - ")
+  
+  todaymorningwind = paste(p4_1[7,1+which.max(as.numeric(p4_1[6,2:5]))],p4_1[6,1+which.max(as.numeric(p4_1[6,2:5]))],sep=" - ")
+  todayafternoonwind = paste(p4_1[7,5+which.max(as.numeric(p4_1[6,6:11]))],p4_1[6,5+which.max(as.numeric(p4_1[6,6:11]))],sep=" - ")
+  todayeveningwind = paste(p4_1[7,11+which.max(as.numeric(p4_1[6,12:17]))],p4_1[6,11+which.max(as.numeric(p4_1[6,12:17]))],sep=" - ")
+  todayovernightwind = paste(p4_1[7,17+which.max(as.numeric(p4_1[6,18:23]))],p4_1[7,16+which.max(as.numeric(p4_1[6,18:23]))],sep=" - ")
 } else{
   todaymorningwind<-"--"
   todayafternoonwind<-"--"
@@ -217,8 +218,14 @@ if(is_empty(p4_2)==FALSE){
   p4_2 = p4_2[-c(1,402)]
   dim(p4_2) = c(25,32)
   p4_2 = t(p4_2)
-  tomorrowmorningwind = paste(p4_2[7,2],p4_2[6,2],sep=" - ")
-  tomorrowafternoonwind = paste(p4_2[7,8],p4_2[6,8],sep=" - ")
+  if(max(as.numeric(p4_2[6,2:5])>=max(as.numeric(p4_1[6,18:23])))){
+  tomorrowmorningwind = paste(p4_2[7,1+which.max(as.numeric(p4_2[6,2:5]))],p4_2[6,1+which.max(as.numeric(p4_2[6,2:5]))],sep=" - ")
+  }
+  else{
+    tomorrowmorningwind = paste(p4_1[7,1+which.max(as.numeric(p4_1[6,18:23]))],p4_1[6,1+which.max(as.numeric(p4_1[6,18:23]))],sep=" - ")
+  }
+  
+  tomorrowafternoonwind = paste(p4_2[7,5+which.max(as.numeric(p4_2[6,6:11]))],p4_2[6,5+which.max(as.numeric(p4_2[6,6:11]))],sep=" - ")
 } else {
   tomorrowmorningwind<-"--"
   tomorrowafternoonwind<-"--"
