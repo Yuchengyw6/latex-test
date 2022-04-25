@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - master
-# The workflow schedule is defined by cron expression, e.g.: */4 11-12 * * * means this task will run every 4 minutes
-# between 11-12 am UTC
+# The workflow schedule is defined by cron expression, e.g.: */4 11-13 * * * means this task will run every 4 minutes
+# between 11-13 am UTC
   schedule:
-    - cron: "*/4 12-13 * * *"
+    - cron: "*/5 11-13 * * *"
 
 jobs:
   build:
