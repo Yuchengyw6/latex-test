@@ -24,13 +24,13 @@ The files with red squares are the most important files in this project.
 
 Generally, this report is generated in two steps:
 
-1, Data Collection
+1. **Data Collection**
 
 [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R) is the data scraping part of this project, the daily data we need is scraped from 6 different sources and automatically generate a .tex file in the [data-raw](https://github.com/ACHDAirQuality/ACHD_Report_Generate/tree/master/data-raw) folder.
 
-2, Generate Latex report
+2. **Generate Latex Report**
 
-[main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) is the main part of the report, it will be generated automatically everyday. 
+[main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) is the main part of the report, it will be generated automatically everyday. The final report is under the other branch called [gh-pages](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/gh-pages/main.pdf)
 
 ## Workflow files
 
