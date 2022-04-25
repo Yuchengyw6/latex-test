@@ -1,3 +1,7 @@
+#
+# Author: Kevin Yang, Yucheng Wang
+#
+
 install.packages("stringr")
 install.packages("curl")
 install.packages("httr")
