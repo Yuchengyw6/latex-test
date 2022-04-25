@@ -805,7 +805,7 @@ output = paste(output,AQI_LC_today_Week,sep="\n")
 AQI_LC_tom_Week = paste("\\newcommand\\AQIWeekTom{",AQIWeekTom,"}",sep="")
 output = paste(output,AQI_LC_tom_Week,sep="\n")
 
-mode = paste("\\newcommand\\mode{",mode,"}",sep="")
+mode = paste("\\newcommand\\inversionmode{",mode,"}",sep="")
 output = paste(output,mode,sep="\n")
 
 # write the output to the folder data-raw
