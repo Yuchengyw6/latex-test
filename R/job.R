@@ -552,8 +552,8 @@ if (is_empty(table5)==FALSE){
         return("No upper inversion starting below ~1000 m is reported")
       } else return("Yes, an upper inversion starting below ~1000 m is reported")
     }
-    temp5 <- paste(round(surfaceinversion,1),"°C")
-    depth5 <- paste((inversiondepth),"m")
+    temp5 <- paste("~",round(surfaceinversion,1),"°C")
+    depth5 <- paste("~",inversiondepth,"m")
     time5 <- "--"
     scale5<- fivestrength(surfaceinversion)
     mode<-"forecast" # If this website is used, it will be classified as a "Forecast"
