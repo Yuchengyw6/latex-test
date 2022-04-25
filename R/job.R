@@ -384,12 +384,12 @@ if(is_empty(table4)==FALSE){
 }
 
 # --------------------------------------------------------------------------------------------------------------------------------------
-# Website 5
+# Website 5 - Atmospheric Soundings, University of Wyoming
 # Data is scraped here to calculate the Inversion Strength and Inversion Depths for the day
 # Website is updated at 8 AM every day, (7 AM if not during Daylight Savings Time)
 # --------------------------------------------------------------------------------------------------------------------------------------
-# If the hour is before 8 am, use yesterday's data as a placeholder
 
+# If the hour is before 8 am, use yesterday's data as a placeholder
 if (as.numeric(h)<8){
   yesterday<-strptime(with_tz(Sys.Date()-1,tzone="US/Eastern"),"%Y-%m-%d")
   y5<-as.character(format(yesterday,"%Y"))
@@ -401,8 +401,9 @@ if (as.numeric(h)<8){
   link5<-paste("http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=",y,
                "&MONTH=",m,"&FROM=",d,"12&TO=",d,"12&STNM=72520",sep="")
 }
-
-page5<-tryCatch(read_html(link5),error=function(y){return(c())})# Read link, return a blank vector if the website is down
+# Attempt to read in the website link, if the website is down, this will return a blank vector
+page5<-tryCatch(read_html(link5),error=function(y){return(c())}) # Read link, return a blank vector if the website is down
+# If the website is up, this attempts to scrape necessary data, if it's empty, this will return a blank vector
 if (is_empty(page5)==FALSE){
   table5<-page5 %>% # Extract the node containing the data, which is the whole table in this case
     html_nodes("pre") %>%
@@ -411,7 +412,8 @@ if (is_empty(page5)==FALSE){
   table5<-c()
 }
 
-fivestrength<-function(x){ # Create a description value for how strong the Surface Inversion Strength is based on its value
+# Function that will be used later on to classify the strength of a surface inversion
+fivestrength<-function(x){
   if (x==0){
     return("None")
   } else if (x>0 & x<1){
@@ -423,90 +425,129 @@ fivestrength<-function(x){ # Create a description value for how strong the Surfa
   } else return("Strong")
 }
 
-# if the table is not empty
+# If the table was scraped, organize the table and store the necessary values to the correct variables
+# Important columns: pressure, height and temperature
+# Split each row of data
+# The first four rows are not a part of the table so they are removed
+# First column is stored as pressure
+# Second column is stored as height
+# Third column is stored as temperature, an empty string will be imputed as the first entry since it's missing in the table
+# Combine the columns into a new table, and remove the first row since it has no temperature value
 if (is_empty(table5)==FALSE){
-  fiveextract<-str_extract_all(table5,'\\n.{22}') # Extracts and splits each row of data
-  fivenum<-fiveextract[[1]][-c(1:4)] # Removes the first four rows
-  digits<-trimws(substr(fivenum,3,22),which=c("left")) # Removes the new line characters at the start and any whitespace characters
-  digitssplit<-str_extract_all(digits,'.{1}\\d{1,}.{1}\\d|\\d{1,}.{1}\\d') # Splits the numbers in each row
-  pressure<-lapply(digitssplit,`[[`,1) # Label first column values as "pressure"
-  height<-lapply(digitssplit,`[[`,2) # Label second column values as "height"
-  digitssplit[[1]][3]<-"" # Add an empty string for the third entry in third column since it's not present
-  temperature<-lapply(digitssplit,`[[`,3) # Label third column values as "temperature"
-  five<-cbind(as.numeric(pressure),as.numeric(height),as.numeric(temperature)) # Combine these variables into a new data frame
-  colnames(five)<-c("Pressure (hPa)","Height (m)","Temperature (C)") # Add names to each column with their units of measurement
-  five<-five[-1,] # Remove first row, since it has no temperature value
+  fiveextract<-str_extract_all(table5,'\\n.{22}')
+  fivenum<-fiveextract[[1]][-c(1:4)]
+  digits<-trimws(substr(fivenum,3,22),which=c("left"))
+  digitssplit<-str_extract_all(digits,'.{1}\\d{1,}.{1}\\d|\\d{1,}.{1}\\d')
+  pressure<-lapply(digitssplit,`[[`,1) 
+  height<-lapply(digitssplit,`[[`,2)
+  digitssplit[[1]][3]<-""
+  temperature<-lapply(digitssplit,`[[`,3)
+  five<-cbind(as.numeric(pressure),as.numeric(height),as.numeric(temperature))
+  colnames(five)<-c("Pressure (hPa)","Height (m)","Temperature (C)")
+  five<-five[-1,]
   
   # Calculation for Surface Inversion Strength and Inversion Depth
-  tempdiff<-diff(five[,3]) # Create a differenced list of the temperature column, each entry subtracted from the next
+  # This code looks for the first "peak" in the temperature and subtracts it from the surface temperature to get Surface Inversion Strength
+  # The height the "peak" temperature is at is subtracted with the sea level height (359 m) to get the Inversion Depth
+  tempdiff<-diff(five[,3])
   peaktemp<-five[which(tempdiff<0),3][1]
   mintempheight<-as.numeric(five[which(five[,3]==peaktemp[1]),2])[1]
-  surfaceinversion<-as.numeric(peaktemp-five[1,3]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
+  surfaceinversion<-as.numeric(peaktemp-five[1,3])
   inversiondepth<-as.numeric(mintempheight-five[1,2])
   
   
-  ## To Calculate Break Time
-  breaktemp<-(((inversiondepth/100)+five[which(tempdiff<0),3][1])*9/5)+32 # Take this number and match it to the weather forecast. The time of day when this temperature is reached is the break time.
+  # Calculation for the Inversion Break Time
+  # The following variable will be matched with the weather forecast in Website 3 to find the time
+  # the temperature matches the "peak" temperature above
+  breaktemp<-(((inversiondepth/100)+five[which(tempdiff<0),3][1])*9/5)+32 
   
-  ## Calculations for Surface Inversion Breaks
+  # Output variables for the report
   temp5 <- paste(round(surfaceinversion,1),"°C")
   depth5 <- paste((inversiondepth),"m")
   time5 <- "--"
   scale5<- fivestrength(surfaceinversion)
-  mode<-"observations"
+  mode<-"observations" # If this website is used, it will be classified as "Observations"
   
-  # Determining if there are any upper inversions
-  sentence<-five[which(five[,2]<1000),] # Take all temperature values below 1000 m
-  tempdiffunder1k<-diff(rle(sentence[,3])$values) # Make differenced list
-  e<-which(tempdiffunder1k<0) # Find any differences less than 0
-  f<-diff(e) # Make second differenced list
-  g<-which(f>1) # Find any values greater than 1
+  # Determining if there are any upper inversions below 1000m
+  # This calculates if there are any inversions that don't start at surface level
+  # Process is nearly the same as calculating the surface inversions
+  sentence<-five[which(five[,2]<1000),]
+  tempdiffunder1k<-diff(rle(sentence[,3])$values)
+  e<-which(tempdiffunder1k<0)
+  f<-diff(e)
+  g<-which(f>1)
   
-  upperinversion<-function(){ # Function to detect any inversion that is not a surface inversion and print "Yes" or "No"
+  # Function to detect any inversion that is not a surface inversion and print "Yes" or "No"
+  upperinversion<-function(){
     if (is.na(tempdiffunder1k[e[g[1]+1]])){
       return("No upper inversion starting below ~1000 m is reported")
     } else return("Yes, an upper inversion starting below ~1000 m is reported")
   }
   
+  # Output variable on report
   inversion5 <- upperinversion()
   
-} else {
+  # Finding the inversion break time
+  if(is.na(breaktemp)==FALSE){
+      for(i in 2:25){
+        if(as.numeric(p4_1[2,i])!=23){
+          if(abs(as.numeric(p4_1[3,i])-breaktemp)<=2){
+            if(as.numeric(p4_1[2,i])<12){
+              time5=as.numeric(p4_1[2,i])
+              time5=paste(time5," am",sep="")}
+            break
+          }
+          else{break}
+          
+        }
+        
+      }
+    }
+  
+} else { # If the above website is down or has no data, Website 6 will be used to calculate the Surface Inversion and Inversion depth
+  # This will be specified as a "Forecast" later on
+  # Scrapings and calculations follow nearly the same process
   link5<-paste("https://rucsoundings.noaa.gov/get_soundings.cgi?data_source=GFS&latest=latest&start_year=",y,"&start_month_name=",month.abb[as.numeric(m)],"&start_mday=",as.numeric(d),"&start_hour=",h,"&start_min=0&n_hrs=1.0&fcst_len=shortest&airport=PIT&text=Ascii%20text%20%28GSL%20format%29&hydrometeors=false&start=latest",sep="")
-  page5<-read_html(link5) # Read link
-  table5<-page5 %>% # Extract the node containing the data, which is the whole table in this case
+  page5<-read_html(link5)
+  table5<-page5 %>%
     html_nodes("p") %>%
     html_text()
   if(is_empty(table5)==FALSE){
-    fiveextract<-str_extract_all(table5,'\\d.{1,}') # Remove all new line characters
-    fiverows<-fiveextract[[1]][-c(1:6)] # Remove first 6 rows since important data starts on row 7
-    splitfive<-str_extract_all(fiverows,'-\\d{1,}|\\d{1,}') # Separate all numbers into their own entries
-    type<-lapply(splitfive,`[[`,1) # Label first column as "Type"
-    pressure<-lapply(splitfive,`[[`,2) # Label second column as "Pressure"
-    height<-lapply(splitfive,`[[`,3) # Label third column as "Height"
-    temp<-lapply(splitfive,`[[`,4) # Label fourth column as "temp"
-    dewpoint<-lapply(splitfive,`[[`,5) # Label fifth column as "Dewpoint"
-    winddirection<-lapply(splitfive,`[[`,6) # Label sixth column as "Wind Direction"
-    windspeed<-lapply(splitfive,`[[`,7) # Label seventh column as "Wind Speed"
+    fiveextract<-str_extract_all(table5,'\\d.{1,}')
+    fiverows<-fiveextract[[1]][-c(1:6)]
+    splitfive<-str_extract_all(fiverows,'-\\d{1,}|\\d{1,}') 
+    type<-lapply(splitfive,`[[`,1)
+    pressure<-lapply(splitfive,`[[`,2)
+    height<-lapply(splitfive,`[[`,3)
+    temp<-lapply(splitfive,`[[`,4) 
+    dewpoint<-lapply(splitfive,`[[`,5)
+    winddirection<-lapply(splitfive,`[[`,6)
+    windspeed<-lapply(splitfive,`[[`,7)
     
-    # Create data frame with all the columns combined. Some columns need their data modified by dividing by 10
+    # Website 6 doesn't show decimal points so the data frame below combines the variables above
+    # and divides some values by 10 to account the decimal point
     five<-as.data.frame(cbind(type,as.numeric(pressure)/10,height,as.numeric(temp)/10,as.numeric(dewpoint)/10,winddirection,windspeed)) 
     
-    colnames(five)<-c("Type","Pressure (mb)","Height (m)","Temperature (C)","Dew Point (C)","Wind Direction (Degrees)","Wind Speed (Knots)") # Give each column their names and units
-    tempdifffive<-diff(unlist(five[,4])) # Create a differenced list of the temperature column, each entry subtracted from the next
+    # Calculating Surface Inversion and Inversion Depth - Same as Website 5
+    colnames(five)<-c("Type","Pressure (mb)","Height (m)","Temperature (C)","Dew Point (C)","Wind Direction (Degrees)","Wind Speed (Knots)")
+    tempdifffive<-diff(unlist(five[,4]))
     peaktempalt<-five[which(tempdifffive<0),4][1] 
     mintempheightalt<-as.numeric(five[which(five[,4]==as.numeric(peaktempalt[1])),3])[1]
-    surfaceinversion<-as.numeric(peaktempalt[[1]]-five[1,4][[1]]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
-    inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(five[1,3][[1]])) # Take the height of the peak temperature and subtract the surface height (359 m) to get Inversion Depth
+    surfaceinversion<-as.numeric(peaktempalt[[1]]-five[1,4][[1]]) 
+    inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(five[1,3][[1]]))
     
-    breaktemp<-(((inversiondepth/100)+five[which(tempdifffive<0),4][[1]])*9/5)+32 # Take this number and match it to the weather forecast. The time of day when this temperature is reached is the break time.
+    # Calculation for inversion break time
+    breaktemp<-(((inversiondepth/100)+five[which(tempdifffive<0),4][[1]])*9/5)+32
     
     # Determining if there are any upper inversions
-    sentence<-five[which(five[,3]<1000),] # Take all temperature values below 1000 m
-    tempdiffunder1k<-diff(rle(unlist(sentence[,4]))$values) # Make differenced list
-    e<-which(tempdiffunder1k<0) # Find any differences less than 0
-    f<-diff(e) # Make second differenced list
-    g<-which(f>1) # Find any values greater than 1
-    upperinversion<-function(){ # Function to detect any inversion that is not a surface inversion and print "Yes" or "No"
+    sentence<-five[which(five[,3]<1000),]
+    tempdiffunder1k<-diff(rle(unlist(sentence[,4]))$values)
+    e<-which(tempdiffunder1k<0)
+    f<-diff(e)
+    g<-which(f>1)
+    
+    # Function to detect any inversion that is not a surface inversion and print "Yes" or "No"
+    upperinversion<-function(){
       if (is.na(tempdiffunder1k[e[g[1]+1]])){
         return("No upper inversion starting below ~1000 m is reported")
       } else return("Yes, an upper inversion starting below ~1000 m is reported")
@@ -515,8 +556,10 @@ if (is_empty(table5)==FALSE){
     depth5 <- paste((inversiondepth),"m")
     time5 <- "--"
     scale5<- fivestrength(surfaceinversion)
-    mode<-"forecast"
+    mode<-"forecast" # If this website is used, it will be classified as a "Forecast"
     inversion5<-upperinversion()
+    
+    # Finding inversion break time
     if(is.na(breaktemp)==FALSE){
       for(i in 2:25){
         if(as.numeric(p4_1[2,i])!=23){
@@ -533,7 +576,7 @@ if (is_empty(table5)==FALSE){
       }
     }
     
-  } else{
+  } else{ # If neither website is scraped, these values are used in the report
     surfaceinversion<-"--"
     inversiondepth<-"--"
     inversion5<-"--"
@@ -546,11 +589,12 @@ if (is_empty(table5)==FALSE){
 }
 
 # --------------------------------------------------------------------------------------------------------------------------
-# Website 6
+# Website 6 - Soundings from GFS model
 # Used to calculate the Inversion Strength for the next day
-# Website is updated at 7AM every day 
+# NOTE: Could potentially break during daylight savings time switches
 # --------------------------------------------------------------------------------------------------------------------------
 
+# Use today's soundings if scraping before 8 AM, else use tomorrow's soundings like normal
 if (as.numeric(h)<8){
   link6<-paste("https://rucsoundings.noaa.gov/get_soundings.cgi?data_source=GFS&start_year=",y,
                "&start_month_name=",month.abb[as.numeric(m)],"&start_mday=",as.numeric(d),
@@ -562,8 +606,9 @@ if (as.numeric(h)<8){
                "&start_hour=12&start_min=0&n_hrs=1&fcst_len=shortest&airport=PIT&text=Ascii%20text%20%28GSL%20format%29&hydrometeors=false&startSecs=",
                as.numeric(as.POSIXct(Sys.Date()+1))+43200,"&endSecs=",as.numeric(as.POSIXct(Sys.Date()+1))+46800,sep="")
 }
-
+# Attempt to read in the website link, if the website is down, this will return a blank vector
 page6<-tryCatch(read_html(link6),error = function(y){return(c())}) # Read link, return a blank vector if the website is down
+# If the website is up, this attempts to scrape necessary data, if it's empty, this will return a blank vector
 if (is_empty(page6)==FALSE){
   table6<-page6 %>% # Select nodes with the needed data which is the full table
     html_nodes("p") %>%
@@ -572,29 +617,33 @@ if (is_empty(page6)==FALSE){
   table6<-c()
 }
 
+# If the table was scraped, organize and store the data into their respective variables
 if(is_empty(table6)==FALSE){
-  sixextract<-str_extract_all(table6,'\\d.{1,}') # Remove all new line characters
-  sixrows<-sixextract[[1]][-c(1:6)] # Remove first 6 rows since important data starts on row 7
-  splitsix<-str_extract_all(sixrows,'-\\d{1,}|\\d{1,}') # Separate all numbers into their own entries
-  type<-lapply(splitsix,`[[`,1) # Label first column as "Type"
-  pressure<-lapply(splitsix,`[[`,2) # Label second column as "Pressure"
-  height<-lapply(splitsix,`[[`,3) # Label third column as "Height"
-  temp<-lapply(splitsix,`[[`,4) # Label fourth column as "temp"
-  dewpoint<-lapply(splitsix,`[[`,5) # Label fifth column as "Dewpoint"
-  winddirection<-lapply(splitsix,`[[`,6) # Label sixth column as "Wind Direction"
-  windspeed<-lapply(splitsix,`[[`,7) # Label seventh column as "Wind Speed"
+  sixextract<-str_extract_all(table6,'\\d.{1,}')
+  sixrows<-sixextract[[1]][-c(1:6)]
+  splitsix<-str_extract_all(sixrows,'-\\d{1,}|\\d{1,}')
+  type<-lapply(splitsix,`[[`,1)
+  pressure<-lapply(splitsix,`[[`,2)
+  height<-lapply(splitsix,`[[`,3)
+  temp<-lapply(splitsix,`[[`,4)
+  dewpoint<-lapply(splitsix,`[[`,5)
+  winddirection<-lapply(splitsix,`[[`,6)
+  windspeed<-lapply(splitsix,`[[`,7)
   
-  # Create data frame with all the columns combined. Some columns need their data modified by dividing by 10
+  # This website doesn't show decimal points so the data frame below combines the variables above
+  # and divides some values by 10 to account the decimal point
   six<-as.data.frame(cbind(type,as.numeric(pressure)/10,height,as.numeric(temp)/10,as.numeric(dewpoint)/10,winddirection,windspeed)) 
   
-  colnames(six)<-c("Type","Pressure (mb)","Height (m)","Temperature (C)","Dew Point (C)","Wind Direction (Degrees)","Wind Speed (Knots)") # Give each column their names and units
-  tempdiffsix<-diff(unlist(six[,4])) # Create a differenced list of the temperature column, each entry subtracted from the next
+  # Calculating Surface Inversion and Inversion Depth - Same as Website 5
+  colnames(six)<-c("Type","Pressure (mb)","Height (m)","Temperature (C)","Dew Point (C)","Wind Direction (Degrees)","Wind Speed (Knots)")
+  tempdiffsix<-diff(unlist(six[,4])) 
   peaktempalt<-six[which(tempdiffsix<0),4][1] 
   mintempheightalt<-as.numeric(six[which(six[,4]==as.numeric(peaktempalt[1])),3])[1]
-  surfaceinversion2<-as.numeric(peaktempalt[[1]]-six[1,4][[1]]) # If the temperature increases as height increases, take the peak temperature and subtract it from the surface temperature to get Surface Inversion Strength
-  inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(six[1,3][[1]])) # Take the height of the peak temperature and subtract the surface height (359 m) to get Inversion Depth
+  surfaceinversion2<-as.numeric(peaktempalt[[1]]-six[1,4][[1]])
+  inversiondepth<-as.numeric(mintempheightalt[[1]]-as.numeric(six[1,3][[1]]))
   
-  sixout<-function(x){ # Create a description value for how strong the Surface Inversion Strength is based on its value
+  # Function to classify the Inversion Strength, this variable is output on the report
+  sixout<-function(x){
     if (x==0){
       return("None")
     } else if (x>0 & x<1){
@@ -605,7 +654,7 @@ if(is_empty(table6)==FALSE){
       return("Moderate")
     } else return("Strong")
   }
-} else{
+} else{ # If nothing was scraped, output N/A in the report
   sixout<-function(x){
     return("N/A")
   }
