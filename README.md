@@ -51,13 +51,15 @@ The workflow files here is controlling the schedules of the tasks.
 
 For example, one day you find that the data is not updated, you should firstly check the documentation in [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex), and change the value in [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) manually.
 
+Firstly, click the little pen on the top right corner
 
 
-Firstly, click the little pen on the top right corner<img width="1288" alt="image" src="https://user-images.githubusercontent.com/89940553/163880549-e02f264c-fe62-408c-8c7d-bd5a74ee998d.png">
+<img width="1288" alt="image" src="https://user-images.githubusercontent.com/89940553/163880549-e02f264c-fe62-408c-8c7d-bd5a74ee998d.png">
+
+Then, change the values inside the {} for each variables
 
 
-
-Then, change the values inside the {} for each variables<img width="1222" alt="image" src="https://user-images.githubusercontent.com/89940553/163880635-f98b339f-e0f9-49bd-a404-ce766af429f4.png">
+<img width="1222" alt="image" src="https://user-images.githubusercontent.com/89940553/163880635-f98b339f-e0f9-49bd-a404-ce766af429f4.png">
 
 
 
@@ -69,9 +71,9 @@ After the changes are commited, in [Github Action](https://github.com/ACHDAirQua
 
 
 
-After the tasks complete, you have your report updated, <img width="925" alt="image" src="https://user-images.githubusercontent.com/89940553/163881228-85c6dec9-77f6-4c1a-963b-599a4c6ce064.png">
+After the tasks complete, the report should be update: 
 
-
+<img width="925" alt="image" src="https://user-images.githubusercontent.com/89940553/163881228-85c6dec9-77f6-4c1a-963b-599a4c6ce064.png">
 
 
 2. **Failed Actions**
