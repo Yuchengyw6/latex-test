@@ -425,6 +425,30 @@ fivestrength<-function(x){
   } else return("Strong")
 }
 
+  # Function that will be used later to determininw if there are any upper inversions below 1000m
+  # This calculates if there are any inversions that don't start at surface level
+upperinversion<-function(x){
+  diffx<-diff(x)
+  afterfirstnegative<-which(diffx<0)
+  if(is_empty(afterfirstnegative)==TRUE){
+    return("No upper inversion starting below ~1000 m is reported")
+  } else{
+    pastfirstnegative<-diffx[afterfirstnegative[1]:length(diffx)]
+    nextpositive<-which(pastfirstnegative>0)
+    if(is_empty(nextpositive)==TRUE){
+      return("No upper inversion starting below ~1000 m is reported")
+    } else {
+      pastnextpositive<-diffx[nextpositive[1]:length(diffx)]
+      inversionnegative<-which(pastnextpositive<0)
+      if(is_empty(inversionnegative)==TRUE){
+        return("No upper inversion starting below ~1000 m is reported")
+      } else {
+        return("Yes, an upper inversion starting below ~1000 m is reported")
+      }
+    }
+  }
+}
+
 # If the table was scraped, organize the table and store the necessary values to the correct variables
 # Important columns: pressure, height and temperature
 # Split each row of data
@@ -468,24 +492,9 @@ if (is_empty(table5)==FALSE){
   scale5<- fivestrength(surfaceinversion)
   mode<-"observations" # If this website is used, it will be classified as "Observations"
   
-  # Determining if there are any upper inversions below 1000m
-  # This calculates if there are any inversions that don't start at surface level
-  # Process is nearly the same as calculating the surface inversions
-  sentence<-five[which(five[,2]<1000),]
-  tempdiffunder1k<-diff(rle(sentence[,3])$values)
-  e<-which(tempdiffunder1k<0)
-  f<-diff(e)
-  g<-which(f>1)
-  
-  # Function to detect any inversion that is not a surface inversion and print "Yes" or "No"
-  upperinversion<-function(){
-    if (is.na(tempdiffunder1k[e[g[1]+1]])){
-      return("No upper inversion starting below ~1000 m is reported")
-    } else return("Yes, an upper inversion starting below ~1000 m is reported")
-  }
-  
-  # Output variable on report
-  inversion5 <- upperinversion()
+  #Upper Inversion calculation
+  sentence<-five[which(five[,2]<1000),3]
+  inversion5 <- upperinversion(sentence)
   
   # Finding the inversion break time
   if(is.na(breaktemp)==FALSE){
@@ -540,24 +549,14 @@ if (is_empty(table5)==FALSE){
     breaktemp<-(((inversiondepth/100)+five[which(tempdifffive<0),4][[1]])*9/5)+32
     
     # Determining if there are any upper inversions
-    sentence<-five[which(five[,3]<1000),]
-    tempdiffunder1k<-diff(rle(unlist(sentence[,4]))$values)
-    e<-which(tempdiffunder1k<0)
-    f<-diff(e)
-    g<-which(f>1)
+    sentence<-five[which(five[,3]<1000),4]
     
-    # Function to detect any inversion that is not a surface inversion and print "Yes" or "No"
-    upperinversion<-function(){
-      if (is.na(tempdiffunder1k[e[g[1]+1]])){
-        return("No upper inversion starting below ~1000 m is reported")
-      } else return("Yes, an upper inversion starting below ~1000 m is reported")
-    }
     temp5 <- paste("~",round(surfaceinversion,1),"°C")
     depth5 <- paste("~",inversiondepth,"m")
     time5 <- "--"
     scale5<- fivestrength(surfaceinversion)
     mode<-"forecast" # If this website is used, it will be classified as a "Forecast"
-    inversion5<-upperinversion()
+    inversion5<-upperinversion(sentence)
     
     # Finding inversion break time
     if(is.na(breaktemp)==FALSE){
