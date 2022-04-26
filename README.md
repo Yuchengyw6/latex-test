@@ -3,6 +3,8 @@
 
 This is the Air Quality Forecast and Dispersion outlook report for Allegheny County, designed to make technical air quality data more accessible to a wider audience. The report will be updated everyday at 9am.
 
+### Credits and Contact Information
+
 This repository is adapted from the GitHub action for [compiling a LaTeX document](https://github.com/xu-cheng/latex-action). It was developed by a team from The Master of Statistical Practice program at Carnegie Mellon University as a part of a capstone project for the Allegheny County Health Department. The repository belongs to ACHD, so any questions about this repository should be sent to ACHD.AirQuality@gmail.com. 
 
 Future developers for this process can contact the original team: Clare Cruz (cbrightly1@gmail.com),  Naijia Liu (liunj16@gmail.com), Yucheng Wang(ychwang0331@gmail.com), and Kevin Yang (kjy110498@gmail.com). 
