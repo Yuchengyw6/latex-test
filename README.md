@@ -7,18 +7,17 @@ Thanks a lot to [Cheng Xu](https://github.com/xu-cheng) for his repo https://git
 #### Please note that anything in this repository can be updated by 'commits' including the main.tex and the **pdf report will be automatically generated again** [gh-pages](https://github.com/ACHDAirQuality/ACHD_Report_Generate/tree/gh-pages). 
 
 ## Table of Contents
-* [Files](#files)
+* [Files Outline](#files)
 * [General Logic](#general-logic)
-* [Workflow files](#workflow-files)
+* [Workflow Files](#workflow-files)
 * [Possible Errors](#possible-errors)
-* [Guidance for adding new functions](#guidance-for-adding-new-functions)
+* [Guidance for Adding New Functionality](#guidance-for-adding-new-functionality)
 * [Resources for LaTex](#resources-for-latex)
 
 ## Files
 <img width="786" alt="image" src="https://user-images.githubusercontent.com/89940553/163876583-0bc90d73-3eec-4903-8ac0-cec3da0523f0.png">
 
-The files with red squares are the most important files in this project.
-
+**The files surrounded by red squares are the most important files in this project.**
 
 ## General Logic
 
@@ -32,7 +31,7 @@ Generally, this report is generated in two steps:
 
 > [main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) is the main part of the report, it will be generated automatically everyday. The final report is under the other branch called [gh-pages](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/gh-pages/main.pdf)
 
-## Workflow files
+## Workflow f=Files
 
 The workflow files here is controlling the schedules of the tasks. 
 
@@ -44,13 +43,15 @@ The workflow files here is controlling the schedules of the tasks.
 
 ## Possible Errors
 
-1. **Incorrect / Missing Data*
+1. **Incorrect / Missing Data**
 
-> Some websites sources we are using might be non-functional on some specific days. If you receive an error message via email, and find that the file [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) did not update itself or some data is wrong, you may need to modify this file manually, details please refer to [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex). 
-> If you change the [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) and commit the changes manually, the github action will run again automatically, wait for a few minute and check whether [main.pdf](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/gh-pages/main.pdf) is updated or not.
+> Some websites sources we are using might be non-functional on some specific days. If you receive an error message via email, and find that the file [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) did not update itself or some data is wrong, you may need to modify this file manually. You can manually update the data in the report by editing the file where the data is stored. For details on how to do this, please refer to the example we provided and the instructions below: [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex). 
+
+> If you change the data in the [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) file and commit the changes manually, **the github action will run again automatically** with the changes you made. Please wait for a few minutes and check whether [main.pdf](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/gh-pages/main.pdf) is updated or not.
+
+### Manual Update Example
 
 For example, one day you find that the data is not updated, you should firstly check the documentation in [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex), and change the value in [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) manually.
-
 
 Firstly, click the little pen on the top right corner to edit the file:
 
