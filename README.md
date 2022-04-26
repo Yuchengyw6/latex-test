@@ -44,20 +44,30 @@ The workflow files here is controlling the schedules of the tasks.
 
 ## Possible Errors
 
-1. I**ncorrect / Missing Data*
+1. **Incorrect / Missing Data*
 
 > Some websites sources we are using might be non-functional on some specific days. If you receive an error message via email, and find that the file [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) did not update itself or some data is wrong, you may need to modify this file manually, details please refer to [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex). 
 > If you change the [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) and commit the changes manually, the github action will run again automatically, wait for a few minute and check whether [main.pdf](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/gh-pages/main.pdf) is updated or not.
 
 For example, one day you find that the data is not updated, you should firstly check the documentation in [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex), and change the value in [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) manually.
 
+
+
 Firstly, click the little pen on the top right corner<img width="1288" alt="image" src="https://user-images.githubusercontent.com/89940553/163880549-e02f264c-fe62-408c-8c7d-bd5a74ee998d.png">
+
+
 
 Then, change the values inside the {} for each variables<img width="1222" alt="image" src="https://user-images.githubusercontent.com/89940553/163880635-f98b339f-e0f9-49bd-a404-ce766af429f4.png">
 
+
+
 After that, commit changes, <img width="1086" alt="image" src="https://user-images.githubusercontent.com/89940553/163880859-1e58c689-0b2a-47fd-b5f5-f5d6b8c44251.png">
 
+
+
 After the changes are commited, in [Github Action](https://github.com/ACHDAirQuality/ACHD_Report_Generate/latex-test/actions), you can see the new tasks.<img width="1317" alt="image" src="https://user-images.githubusercontent.com/89940553/163880923-90bce789-3200-4cd0-a6fe-10fb60deef7d.png">
+
+
 
 After the tasks complete, you have your report updated, <img width="925" alt="image" src="https://user-images.githubusercontent.com/89940553/163881228-85c6dec9-77f6-4c1a-963b-599a4c6ce064.png">
 
@@ -72,8 +82,11 @@ The error message could be found as follow, firstly click on [Github Action](htt
 <img width="905" alt="image" src="https://user-images.githubusercontent.com/89940553/163881570-754b14b6-6f1b-46db-ac0d-6a2922f322c7.png">
 
 <img width="558" alt="image" src="https://user-images.githubusercontent.com/89940553/163881714-705c34c5-b412-47c2-8c05-c6a28be8ed8c.png">
+
 <img width="389" alt="image" src="https://user-images.githubusercontent.com/89940553/163881741-f6c2c318-8176-40fe-8d9c-29270a08b308.png">
+
 <img width="669" alt="image" src="https://user-images.githubusercontent.com/89940553/163881800-4a303ead-dd7c-40f8-9cf0-ca8fa349880b.png">
+
 If the error messages are related to connections, for example "port 443", 503, 504, then you should check whether [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) is updated or not, if it is updated normally, then in most of the case, the report would be fine.
 
 ## Guidance for Adding New Functionality
@@ -84,6 +97,8 @@ If the error messages are related to connections, for example "port 443", 503, 5
 output = paste(output,New_Variables,sep="\n")). It should be in the same format like: 
 <img width="594" alt="image" src="https://user-images.githubusercontent.com/89940553/163864052-64695084-8d70-4681-af18-ea5c939c5d6c.png">
 
+
+
 So for example, if you want to add a new variable with name "NewVariable", you should firstly claim this variable, and then add it to the .tex using the method below.
 <img width="767" alt="image" src="https://user-images.githubusercontent.com/89940553/163883442-b5043b29-6e5b-4abe-9f88-c753d1a83395.png">
 
@@ -91,6 +106,8 @@ So for example, if you want to add a new variable with name "NewVariable", you s
 2. **Adding Information to the Report**
 
 > If you would like to add new information to the report (either through an existing or new data source) then you need to add a variable that can be called by the LateX report. To do this, you first need to add the new variable in the [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R) file. Then,  the new variables should appears in the new .tex file, you can use this variable in [main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) to add some new tables, etc.
+
+
 
 For example, you added the NewVariable to the .tex file then, you can use this variable in [main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) like
 <img width="1126" alt="image" src="https://user-images.githubusercontent.com/89940553/163883322-599f909d-e334-4f67-8aba-5180fe6bd42d.png">.
