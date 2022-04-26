@@ -40,7 +40,7 @@ The workflow files here is controlling the schedules of the tasks.
 - [main.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/main.yaml) is the workflow file for compiling the LaTeX file automatically.
 - [schedule-commit.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/schedule-commit.yaml) is the workflow file for the data scraping process.
 
-**Ideally you do not need to change anything inside these files.**
+**Ideally you do not need to change anything inside these files.** The only thing that you may change in these files is the time the report is updated, which is in the [schedule-commit.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/schedule-commit.yaml) file.
 
 
 ## Possible Errors
@@ -115,7 +115,7 @@ If the error messages are related to connections, for example "port 443", 503, 5
 
 1. **Adding a New Data Source**
 
-> If you need to add a new data source or change a webscraping source in the report, firstly, you need to add/change the webscraping process in [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R)> The current webscraping processes are conducted by rvest package but some websites may require other packages or tools to scrape the desired information. Careful manipulation may also be required in order to grab certain words, phrases, or table. Please note that the code that is used in the code currently may not be generalizable to other websites since every website has a unique format.
+> If you need to add a new data source or change a webscraping source in the report, firstly, you need to add/change the webscraping process in [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R). The current webscraping processes are conducted by rvest package but some websites may require other packages or tools to scrape the desired information. Careful manipulation may also be required in order to grab certain words, phrases, or table. Please note that the code that is used in the code currently may not be generalizable to other websites since every website has a unique format.
 
 > Please note that these websites tend to be very volatile with their update cadences and their formats. We strongly recommend that any additional or changed websites have some logic in them to account for the scenarios where data is completely missing or incorrect. These volatile situations are difficult to predict and create data checks for so we recommend focusing on common existing problems rather than trying to account for every possible problem.
 
