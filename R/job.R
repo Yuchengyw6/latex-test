@@ -504,7 +504,7 @@ if (is_empty(table5)==FALSE){
   depth5 <- paste((inversiondepth),"m")
   time5 <- "--"
   scale5<- fivestrength(surfaceinversion)
-  mode<-"observations" # If this website is used, it will be classified as "Observations"
+  mode<-"observation" # If this website is used, it will be classified as "Observations"
   
   #Upper Inversion calculation
   sentence<-five[which(five[,2]<1000),3]
@@ -597,7 +597,7 @@ if (is_empty(table5)==FALSE){
     depth5<-paste("--","m")
     time5<-"--"
     scale5<-"--"
-    mode<-"N/A because data could not be collected today"
+    mode<-"N/A, because data could not be collected today"
   }
 }
 
