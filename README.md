@@ -40,7 +40,7 @@ The workflow files here is controlling the schedules of the tasks.
 - [main.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/main.yaml) is the workflow file for compiling the LaTeX file automatically.
 - [schedule-commit.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/schedule-commit.yaml) is the workflow file for the data scraping process.
 
-**Ideally you do not need to change anything inside these files.** The only thing that you may change in these files is the time the report is updated, which is in the [schedule-commit.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/schedule-commit.yaml) file.
+**Ideally you do not need to change anything inside these files.** The only thing that you may change in these files is the time the report is updated, which is in the [main.yaml](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/.github/workflows/main.yaml) file.
 
 
 ## Possible Errors
