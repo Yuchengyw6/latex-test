@@ -45,13 +45,13 @@ The workflow files here is controlling the schedules of the tasks.
 
 1. **Incorrect / Missing Data**
 
-> Some websites sources we are using might be non-functional on some specific days. If you receive an error message via email, and find that the file [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) did not update itself or some data is wrong, you may need to modify this file manually. You can manually update the data in the report by editing the file where the data is stored. For details on how to do this, please refer to the [instructions below](#manual-update-example) and the example file we have provided: (###manual-update-example): [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex). 
+> Some websites sources we are using might be non-functional on some specific days. If you receive an error message via email, and find that the file [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) did not update itself or some data is wrong, you may need to modify this file manually. You can manually update the data in the report by editing the file where the data is stored. For details on how to do this, please refer to the [instructions below](#manual-update-example) and the example file we have provided: [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex). 
 
 > If you change the data in the [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) file and commit the changes manually, **the github action will run again automatically** with the changes you made. Please wait for a few minutes and check whether [main.pdf](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/gh-pages/main.pdf) is updated or not.
 
 ### Manual Update Example
 
-For example, one day you find that the data is not updated, you should firstly check the documentation in [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex), and change the value in [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) manually.
+For example, one day you find that the data is not updated for whatever reason. You should first check the documentation in [example.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/example.tex) to remind yourself of the file structure. Then you should change the value in [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) manually by following the instructions here:
 
 Firstly, click the little pen on the top right corner to edit the file:
 
@@ -85,7 +85,12 @@ After the tasks complete, the report should be updated:
 
 2. **Failed Actions**
 
-> If you see that some github action tasks have failed, you may want to navigate to the [Action Page](https://github.com/ACHDAirQuality/ACHD_Report_Generate/actions), where you can find an error message for each task. For the data scraping tasks, it is normal to have some failures each day since some of the websites may not always be accesable, you only need need to care about whether [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) update it self or not. Ideally the latex report generating process would not fail, if it fails after changing the data manually, you need to be sure the format of the data is correct.
+> If you see that some github action tasks have failed, you may want to navigate to the [Action Page](https://github.com/ACHDAirQuality/ACHD_Report_Generate/actions), where you can find an error message for each task. For the data scraping tasks, **it is normal to have some failures each day since some of the websites may not always be accessible**. 
+> **The only you only need need to care about is whether [data_X07.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/data-raw/data_X07.tex) update itself**. If it fails after changing the data manually, double check all the variables and format of everything for any errors.
+
+
+### Failed Actions Example
+
 
 The error message could be found as follow, firstly click on [Github Action](https://github.com/ACHDAirQuality/ACHD_Report_Generate/actions) and navigate to the tasks that failed.
 
@@ -108,12 +113,17 @@ If the error messages are related to connections, for example "port 443", 503, 5
 
 1. **Adding a New Data Source**
 
-> If you need to add a new data source or change the webscraping source in the report, firstly you need to add/change the webscraping process in [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R), the current webscraping processes are conducted by rvest package. After webscraping from the new source, you need to add new variables at end of the script(e.g.: New_Variables = paste("\\newcommand\\New_Variables_Name{",New_Variables_Data,"}",sep="") 
+> If you need to add a new data source or change a webscraping source in the report, firstly, you need to add/change the webscraping process in [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R)> The current webscraping processes are conducted by rvest package but some websites may require other packages or tools to scrape the desired information. Careful manipulation may also be required in order to grab certain words, phrases, or table. Please note that the code that is used in the code currently may not be generalizable to other websites since every website has a unique format.
+
+> Please note that these websites tend to be very volatile with their update cadences and their formats. We strongly recommend that any additional or changed websites have some logic in them to account for the scenarios where data is completely missing or incorrect. These volatile situations are difficult to predict and create data checks for so we recommend focusing on common existing problems rather than trying to account for every possible problem.
+
+> After webscraping from the new source, you need to add new variables at end of the script(e.g.: New_Variables = paste("\\newcommand\\New_Variables_Name{",New_Variables_Data,"}",sep="") 
 output = paste(output,New_Variables,sep="\n")). It should be in the same format like: 
 <img width="594" alt="image" src="https://user-images.githubusercontent.com/89940553/163864052-64695084-8d70-4681-af18-ea5c939c5d6c.png">
 
+### Adding Source Example
 
-So for example, if you want to add a new variable with name "NewVariable", you should firstly claim this variable, and then add it to the .tex using the method below.
+So for example, if you want to add a new variable with name "NewVariable", you should firstly claim this variable name by making sure it is uniquely names. Then add it to the .tex using the method below.
 <img width="767" alt="image" src="https://user-images.githubusercontent.com/89940553/163883442-b5043b29-6e5b-4abe-9f88-c753d1a83395.png">
 
 
@@ -121,6 +131,7 @@ So for example, if you want to add a new variable with name "NewVariable", you s
 
 > If you would like to add new information to the report (either through an existing or new data source) then you need to add a variable that can be called by the LateX report. To do this, you first need to add the new variable in the [job.R](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/R/job.R) file. Then,  the new variables should appears in the new .tex file, you can use this variable in [main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) to add some new tables, etc.
 
+### Adding Information Example
 
 For example, you added the NewVariable to the .tex file then, you can use this variable in [main.tex](https://github.com/ACHDAirQuality/ACHD_Report_Generate/blob/master/main.tex) like
 
