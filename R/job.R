@@ -1,7 +1,18 @@
 #
-# Author: Kevin Yang, Yucheng Wang
+# R Source Code to Collect the Data for the ACHD Report
 #
+# Created by Kevin Yang and Yucheng Wang with the MSP program at CMU
+#
+# Table of Contents
+# 1. AirNow
+# 2. PA-EPA
+# 3. NWS
+# 4. Fire Weather Planning Forecast from the National Weather Service
+# 5. Atmospheric Soundings, University of Wyoming
+# 6. Soundings from GFS model
+# 7. Creating the variables for the final report
 
+# Package Installation
 install.packages("stringr")
 install.packages("curl")
 install.packages("httr")
@@ -10,7 +21,7 @@ install.packages("dplyr")
 install.packages("purrr")
 install.packages("lubridate")
 
-
+# Package Load
 library(stringr)
 library(curl)
 library(rvest)
@@ -18,6 +29,7 @@ library(dplyr)
 library(purrr)
 library(lubridate)
 
+# Grabbing the date and time information for today
 times<-strptime(with_tz(Sys.time(),tzone="US/Eastern"),"%Y-%m-%d %H:%M:%S") # Extract the system date and time
 y<-as.character(format(times,"%Y")) # Extract and store the year value
 m<-as.character(format(times,"%m")) # Extract and store the month value
@@ -25,9 +37,11 @@ d<-as.character(format(times,"%d")) # Extract and store the day value
 h<-as.character(format(times,"%H")) # Extract and store the hour value
 
 # --------------------------------------------------------------------------------------------------------------------------------------
-# 1, webscraping processes
-# webscraping with rvest package, some regular expressions are used.
-# website 1
+# Webscraping Processes
+# Performed with rvest package, some regular expressions are used.
+# --------------------------------------------------------------------------------------------------------------------------------------
+
+# Website 1
 # For website 1, AQI information(today, tomorrow) for Pittsburgh area and Liberty-Clairton area are scarped.
 # The content of the website would be updated befor 8 am everyday, and does not change until next update.
 # The source of the websites is the api of airnow.
